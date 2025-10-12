@@ -8,6 +8,8 @@ if ($_SESSION['role'] !== 'admin') {
     header("Location: ../public/index.php");
     exit;
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -56,6 +58,7 @@ if ($_SESSION['role'] !== 'admin') {
             float: right;
             margin-top: 6px;
         }
+        
     </style>
 </head>
 

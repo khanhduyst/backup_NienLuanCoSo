@@ -1,4 +1,6 @@
-<?php include "layouts/header.php" ?>
+<?php
+include '../app/config.php';
+include "layouts/header.php" ?>
 
 <div class="container my-4">
     <div class="row">
@@ -28,6 +30,29 @@
                 </div>
             </div>
 
+            <div class="cart-item d-flex align-items-center justify-content-between mb-3">
+                <div class="d-flex align-items-center">
+                    <img src="assets/img/product/iphone/iphone13.jpg" alt="iPhone" class="cart-img">
+                    <div class="ms-3">
+                        <h6>iPhone 13 Pro Max</h6>
+                        <p class="text-muted">Màu: Xanh | Dung lượng: 128GB</p>
+                        <div class="quantity-box d-flex align-items-center">
+                            <button class="btn btn-outline-secondary btn-sm minus">-</button>
+                            <input type="text" class="form-control qty text-center mx-1" value="1" readonly>
+                            <button class="btn btn-outline-secondary btn-sm plus">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bên phải gói chung giá và nút xoá -->
+                <div class="text-end cart-right">
+                    <div>
+                        <span class="fw-bold text-danger price" data-price="24000000">24,000,000đ</span><br>
+                        <small class="text-muted"><del>26,000,000đ</del></small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-danger remove-item">Xoá</button>
+                </div>
+            </div>
         </div>
 
         <!-- Thông tin đơn hàng -->
