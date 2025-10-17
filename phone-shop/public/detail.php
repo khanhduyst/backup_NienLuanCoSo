@@ -185,27 +185,26 @@ $sql = "";
                                 ?>
                                 <label class="fw-bold">Màu sắc: <span id="selectedColor">Chưa chọn</span></label>
                                 <div class="d-flex flex-wrap gap-2">
-                                    <?php
-                                    while ($items = $product->fetch_assoc()) {
-                                        echo "
-                                    <button type='button' class='btn btn-outline-secondary option-btn color-btn' data-color='{$items['colorName']}'>{$items['colorName']}</button>
-                                    ";
-                                    }
-                                    ?>
-                                    <input type="hidden" name="color" id="colorInput">
+                                    <?php while ($items = $product->fetch_assoc()) { ?>
+                                        <button type='button' class='btn btn-outline-secondary option-btn color-btn' data-color='<?php echo $items['colorName']; ?>'>
+                                            <?php echo $items['colorName']; ?>
+                                        </button>
+                                    <?php } ?>
+                                    <input type="hidden" name="color" id="colorInput" value="">
                                 </div>
-                            </div>
 
+                            </div>
                             <!-- ram -->
                             <div class="mb-3">
                                 <?php
                                 $idProduct = $_GET['product_id'];
                                 $queryRam = "SELECT DISTINCT p.id AS product_id, p.name AS product_name, r.size AS ramName
-                            FROM products p  INNER JOIN product_variants pv ON pv.product_id = p.id
-                            INNER JOIN rams r ON r.id = pv.ram_id WHERE product_id = $idProduct AND pv.is_deleted = 0";
+                                    FROM products p  INNER JOIN product_variants pv ON pv.product_id = p.id
+                                    INNER JOIN rams r ON r.id = pv.ram_id WHERE product_id = $idProduct AND pv.is_deleted = 0";
                                 $productRam = $conn->query($queryRam);
                                 ?>
                                 <label class="fw-bold">Kích thước(ram): <span id="selectedSize">Chưa chọn</span></label>
+                                </br>
                                 <div class="d-flex gap-2">
                                     <?php
                                     while ($productRams = $productRam->fetch_assoc()) {
@@ -215,7 +214,6 @@ $sql = "";
                                     <input type="hidden" name="ram" id="ramInput">
                                 </div>
                             </div>
-
                             <!-- rom -->
                             <div class="mb-3">
                                 <?php
@@ -406,10 +404,10 @@ $sql = "";
     document.querySelectorAll('.thumb').forEach(img => {
         img.addEventListener('click', function() {
             let mainImg = document.querySelector('.main-img');
-            mainImg.style.opacity = 0; // mờ đi
+            mainImg.style.opacity = 0;
             setTimeout(() => {
-                mainImg.src = this.src; // đổi hình
-                mainImg.style.opacity = 1; // hiện lại
+                mainImg.src = this.src;
+                mainImg.style.opacity = 1;
             }, 200);
         });
     });
@@ -481,12 +479,12 @@ $sql = "";
             updatePrice();
         });
     });
-    document.getElementById('addToCartForm').addEventListener('submit', function(e) {
-        if (!document.getElementById('ramInput').value || !document.getElementById('romInput').value) {
-            e.preventDefault();
-            alert('Vui lòng chọn RAM và ROM trước khi thêm vào giỏ hàng!');
-        }
-    });
+    // document.getElementById('addToCartForm').addEventListener('submit', function(e) {
+    //     if (!document.getElementById('ramInput').value || !document.getElementById('romInput').value) {
+    //         e.preventDefault();
+    //         alert('Vui lòng chọn RAM và ROM trước khi thêm vào giỏ hàng!');
+    //     }
+    // });
 
     // Số lượng
     // let qtyInput = document.getElementById('qtyInput');
@@ -503,6 +501,28 @@ $sql = "";
     //         selectedQty.textContent = qtyInput.value;
     //     }
     // });
+
+    document.getElementById('addToCartForm').addEventListener('submit', function(e) {
+        const color = document.getElementById('colorInput').value;
+        const ram = document.getElementById('ramInput').value;
+        const rom = document.getElementById('romInput').value;
+
+        if (!color || !ram || !rom) {
+            e.preventDefault();
+            let missing = [];
+            if (!color) missing.push("Màu sắc");
+            if (!ram) missing.push("RAM");
+            if (!rom) missing.push("ROM");
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Thiếu thông tin sản phẩm!',
+                html: 'Vui lòng chọn: <b>' + missing.join(', ') + '</b> trước khi thêm vào giỏ hàng.',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Đã hiểu'
+            });
+        }
+    });
 
     document.querySelectorAll('.toggle-btn').forEach(btn => {
         btn.addEventListener('click', function() {

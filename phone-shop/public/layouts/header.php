@@ -1,8 +1,6 @@
 <?php
 session_start();
-include '../app/config.php';
-
-?>
+include '../app/config.php'; ?>
 <!doctype html>
 <html lang="vi">
 
@@ -42,10 +40,34 @@ include '../app/config.php';
             <div class="d-flex align-items-center gap-3">
                 <div><i class="bi bi-telephone"></i> <span class="small">0385942049</span></div>
                 <div><i class="bi bi-geo-alt"></i> <span class="small">Cửa hàng</span></div>
-                <div><i class="bi bi-person"></i> <a href="#" class="small text-white text-decoration-none">Đăng nhập / Đăng ký</a></div>
+                <div><i class="bi bi-person"></i>
+                    <?php
+                    if (isset($_SESSION['username'])) {
+                        // Đã đăng nhập => hiển thị username
+                        echo '<a href="../public/order_history.php" class="small text-white text-decoration-none">'
+                            . htmlspecialchars($_SESSION['username']) .
+                            '</a>';
+                    } else {
+                        // Chưa đăng nhập => hiển thị nút login
+                        echo '<a href="../public/login.php" class="small text-white text-decoration-none">
+            Đăng nhập / Đăng ký
+          </a>';
+                    }
+                    ?>
+
+
+                </div>
                 <a href="cart.php" class="btn btn-outline-light position-relative">
                     <i class="bi bi-cart"></i> Giỏ hàng
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                    <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><?php
+                                                                                                                                    $cartCount = 0;
+                                                                                                                                    if (isset($_SESSION['cart'])) {
+                                                                                                                                        foreach ($_SESSION['cart'] as $item) {
+                                                                                                                                            $cartCount += $item['quantity']; // tính tổng quantity
+                                                                                                                                        }
+                                                                                                                                    }
+                                                                                                                                    echo $cartCount;
+                                                                                                                                    ?></span>
                 </a>
             </div>
         </div>

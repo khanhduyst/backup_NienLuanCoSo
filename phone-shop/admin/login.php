@@ -18,16 +18,14 @@ if (isset($_POST['login'])) {
     $result = $conn->query($sql);
 
     if ($result && $result->num_rows == 1) {
-        $user = $result->fetch_assoc(); // giờ $user là array
+        $user = $result->fetch_assoc();
 
-        // So sánh mật khẩu thường (chưa hash)
         if ($password === $user['password']) {
             $_SESSION['user_id']   = $user['id'];
             $_SESSION['role']      = $user['role'];
             $_SESSION['fullname']  = $user['fullname'];
             $_SESSION['username']  = $user['username'];
 
-            // Ghi log đăng nhập
             $user_id = $user['id'];
             $username = $user['username'];
             $desc = "Người dùng $username đã đăng nhập hệ thống";
