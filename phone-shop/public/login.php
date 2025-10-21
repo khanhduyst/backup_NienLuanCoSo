@@ -12,7 +12,7 @@ if (isset($_POST['login'])) {
     $password = $_POST['password'];
 
     // Tìm user theo username
-    $sql = "SELECT * FROM users WHERE username = '$username' AND status = 1 LIMIT 1";
+    $sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password' AND status = 0 AND is_delete = 0 LIMIT 1";
     $result = $conn->query($sql);
 
     if ($result && $result->num_rows == 1) {
@@ -27,6 +27,12 @@ if (isset($_POST['login'])) {
             $user_id = $user['id'];
             $username = $user['username'];
 
+            $desc = "Người dùng $username đã đăng nhập hệ thống";
+            $desc = $conn->real_escape_string($desc);
+
+            $sql_log = "INSERT INTO activity_logs (user_id, action, table_name, description)
+                        VALUES ('$user_id', 'LOGIN', 'users', '$desc')";
+            $conn->query($sql_log);
 
             header("Location: ../public/index.php");
             exit;
@@ -229,7 +235,8 @@ if (isset($_POST['login'])) {
                 <div class="col-lg-6">
                     <div class="card1 pb-5">
                         <div class="row">
-                            <img src="https://i.imgur.com/CXQmsmF.png" class="logo">
+                            <!-- <img src="" class="logo"> -->
+                             
                         </div>
                         <div class="row px-3 justify-content-center mt-4 mb-5 border-line">
                             <img src="https://i.imgur.com/uNGdWHi.png" class="image">
@@ -238,6 +245,8 @@ if (isset($_POST['login'])) {
                 </div>
                 <div class="col-lg-6">
                     <div class="card2 card border-0 px-4 py-5">
+                        <h2 class="text-center">ĐĂNG NHẬP</h2>
+                        <br>
                         <form action="" method="post">
                             <div class="row mb-4 px-3">
                                 <h6 class="mb-0 mr-4 mt-2">Sign in with</h6>
@@ -283,7 +292,7 @@ if (isset($_POST['login'])) {
                                 <button type="submit" name="login" class="btn btn-blue text-center">Đăng nhập</button>
                             </div>
                             <div class="row mb-4 px-3">
-                                <small class="font-weight-bold">Don't have an account? <a class="text-danger ">Register</a></small>
+                                <small class="font-weight-bold">Bạn chưa có tài khoản? <a href="./signup.php" class="text-danger ">Đăng ký</a></small>
                             </div>
                         </form>
                     </div>
@@ -291,7 +300,7 @@ if (isset($_POST['login'])) {
             </div>
             <div class="bg-blue py-4">
                 <div class="row px-3">
-                    <small class="ml-4 ml-sm-5 mb-2">Copyright &copy; 2019. All rights reserved.</small>
+                    <small class="ml-4 ml-sm-5 mb-2">© 2025 LKD SMART. All rights reserved.</small>
                     <div class="social-contact ml-4 ml-sm-auto">
                         <span class="fa fa-facebook mr-4 text-sm"></span>
                         <span class="fa fa-google-plus mr-4 text-sm"></span>

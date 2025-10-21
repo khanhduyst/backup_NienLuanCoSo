@@ -21,7 +21,7 @@ if ($_SESSION['role'] !== 'admin') {
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -58,7 +58,6 @@ if ($_SESSION['role'] !== 'admin') {
             float: right;
             margin-top: 6px;
         }
-        
     </style>
 </head>
 
@@ -114,23 +113,19 @@ if ($_SESSION['role'] !== 'admin') {
                     </li>
                 </ul>
             </div>
-            <!-- Main content -->
             <div class="col-md-10">
-                <!-- Topbar -->
                 <div class="d-flex justify-content-between align-items-center px-4 py-2 border-bottom bg-white shadow-sm">
-                    <!-- Thanh tìm kiếm -->
                     <p class="d-flex align-items-center">
 
                     </p>
 
-                    <!-- User dropdown -->
                     <div class="dropdown">
                         <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="https://i.pravatar.cc/40" alt="user" width="40" height="40" class="rounded-circle me-2">
-                            <strong><?php echo $_SESSION['fullname']?></strong>
+                            <img src="./assets/image/avata/R.png" alt="user" width="40" height="40" class="rounded-circle me-2">
+                            <strong><?php echo $_SESSION['fullname'] ?></strong>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                            <li><a class="dropdown-item" href="#"><i class="fa fa-user me-2"></i>Hồ sơ</a></li>
+                            <li><a class="dropdown-item" href="info.php"><i class="fa fa-user me-2"></i>Hồ sơ</a></li>
                             <li><a class="dropdown-item" href="#"><i class="fa fa-cog me-2"></i>Cài đặt</a></li>
                             <li><a class="dropdown-item" href="#"><i class="fa fa-credit-card me-2"></i>Gói thanh toán</a></li>
                             <li>

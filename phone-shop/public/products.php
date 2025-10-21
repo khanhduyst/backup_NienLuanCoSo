@@ -1,4 +1,55 @@
-<?php include 'layouts/header.php'; ?>
+<?php
+include '../app/config.php';
+include 'layouts/header.php';
+
+$brand_name = $_GET['brand'] ?? null;
+
+if ($brand_name) {
+    $brand_name = strtoupper(trim($brand_name));
+
+    $sql = "SELECT p.id AS product_id, 
+                   p.name AS product_name, 
+                   b.name AS brand_name, 
+                   p.img_main AS img_main, 
+                   p.screen_technology AS screen_technology, 
+                   p.categories AS product_cate, 
+                   MIN(pv.price) AS price
+            FROM products p  
+            INNER JOIN product_variants pv ON pv.product_id = p.id
+            INNER JOIN brands b ON b.id = p.brand_id 
+            WHERE UPPER(b.name) LIKE '%$brand_name%'
+              AND p.status = 0 
+              AND p.is_delete = 0
+            GROUP BY p.id";
+} else {
+    $sql = "SELECT p.id AS product_id, 
+                   p.name AS product_name, 
+                   b.name AS brand_name, 
+                   p.img_main AS img_main, 
+                   p.screen_technology AS screen_technology, 
+                   p.categories AS product_cate, 
+                   MIN(pv.price) AS price
+            FROM products p  
+            INNER JOIN product_variants pv ON pv.product_id = p.id
+            INNER JOIN brands b ON b.id = p.brand_id 
+            WHERE p.status = 0 
+              AND p.is_delete = 0
+            GROUP BY p.id";
+}
+
+$resultProduct = $conn->query($sql);
+?>
+<style>
+    .product-spec {
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 14px;
+        color: #555;
+    }
+</style>
 <div class="container my-4">
 
     <!-- Nút sắp xếp -->
@@ -12,91 +63,38 @@
 
     <!-- Danh sách sản phẩm -->
     <div class="row row-cols-2 row-cols-md-5 g-3" id="productList">
-
-        <div class="col">
-            <div class="product-card" data-name="iPhone 12 Pro Max" data-price="13750500">
-                <span class="discount-badge">-11%</span>
-                <img src="assets/img/product/iphone/iphone13.jpg" class="product-img" alt="">
-                <div class="promo-tag">KHUYẾN MÃI ĐẶC BIỆT</div>
-                <div class="product-info">
-                    <h6 class="product-name">iPhone 12 Pro Max</h6>
-                    <p class="product-color">+4 màu sắc</p>
-                    <div class="price-box">
-                        <span class="new-price">13,750,500đ</span>
-                        <span class="old-price"><del>15,450,000đ</del></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col">
-            <a href="detail.php" class="product-link">
-                <div class="product-card" data-name="ne 12 Pro Max" data-price="137500">
-                    <span class="discount-badge">-11%</span>
-                    <img src="assets/img/product/iphone/iphone13.jpg" class="product-img" alt="iPhone 12 Pro Max">
-                    <div class="promo-tag">KHUYẾN MÃI ĐẶC BIỆT</div>
-                    <div class="product-info">
-                        <h6 class="product-name">iPhone 12 Pro Max</h6>
-                        <p class="product-color">+4 màu sắc</p>
-                        <div class="price-box">
-                            <span class="new-price">13,750,500đ</span>
-                            <span class="old-price"><del>15,450,000đ</del></span>
+        <?php
+        if ($resultProduct && $resultProduct->num_rows > 0) {
+            $qtyColor = 0;
+            $percent = 0;
+            while ($product = $resultProduct->fetch_assoc()) {
+                $giacu = $product['price'] + 2000000;
+                $giagiam = $product['price'];
+                $percent = (2000000 / $giacu) * 100;
+        ?>
+                <div class="col">
+                    <a href='detail.php?product_id=<?php echo $product['product_id'] ?>'>
+                        <div class="product-card" data-name="<?php echo $product['product_name'] ?>" data-price="<?php echo $product['price'] ?>">
+                            <span class="discount-badge">-<?php echo round($percent) ?>%</span>
+                            <img src="assets/img/product/<?php echo $product['img_main'] ?>" class="product-img" alt="<?php echo $product['product_name'] ?>">
+                            <div class="promo-tag">KHUYẾN MÃI ĐẶC BIỆT</div>
+                            <div class="product-info">
+                                <h6 class="product-name product-spec"><?php echo $product['product_name'] ?></h6>
+                                <p class="product-color product-spec">Màn hình: <?php echo $product['screen_technology'] ?></p>
+                                <div class="price-box">
+                                    <span class="new-price"><?php echo number_format($product['price'], 0, ',', '.') ?>đ</span>
+                                    <span class="old-price"><del><?php echo number_format($product['price'] + 2000000, 0, ',', '.') ?>đ</del></span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
-            </a>
-        </div>
-        <div class="col">
-            <a href="detail.php" class="product-link">
-                <div class="product-card" data-name="one 12 Pro Max" data-price="1350500">
-                    <span class="discount-badge">-11%</span>
-                    <img src="assets/img/product/iphone/iphone15.jpg" class="product-img" alt="iPhone 12 Pro Max">
-                    <div class="promo-tag">KHUYẾN MÃI ĐẶC BIỆT</div>
-                    <div class="product-info">
-                        <h6 class="product-name">iPhone 12 Pro Max</h6>
-                        <p class="product-color">+4 màu sắc</p>
-                        <div class="price-box">
-                            <span class="new-price">13,750,500đ</span>
-                            <span class="old-price"><del>15,450,000đ</del></span>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col">
-            <a href="detail.php" class="product-link">
-                <div class="product-card" data-name="Phone 12 Pro Max" data-price="1375500">
-                    <span class="discount-badge">-11%</span>
-                    <img src="assets/img/product/iphone/iphone16.png" class="product-img" alt="iPhone 12 Pro Max">
-                    <div class="promo-tag">KHUYẾN MÃI ĐẶC BIỆT</div>
-                    <div class="product-info">
-                        <h6 class="product-name">iPhone 12 Pro Max</h6>
-                        <p class="product-color">+4 màu sắc</p>
-                        <div class="price-box">
-                            <span class="new-price">13,750,500đ</span>
-                            <span class="old-price"><del>15,450,000đ</del></span>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col">
-            <a href="detail.php" class="product-link">
-                <div class="product-card" data-name="iPhone 12 Pro Max" data-price="13750500">
-                    <span class="discount-badge">-11%</span>
-                    <img src="assets/img/product/iphone/iphone17.jpg" class="product-img" alt="iPhone 12 Pro Max">
-                    <div class="promo-tag">KHUYẾN MÃI ĐẶC BIỆT</div>
-                    <div class="product-info">
-                        <h6 class="product-name">iPhone 12 Pro Max</h6>
-                        <p class="product-color">+4 màu sắc</p>
-                        <div class="price-box">
-                            <span class="new-price">13,750,500đ</span>
-                            <span class="old-price"><del>15,450,000đ</del></span>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
+        <?php
+            }
+        } else {
+            echo "<div class='alert alert-info text-center'>Không tìm thấy sản phẩm nào.</div>";
+        }
+        ?>
     </div>
 </div>
 

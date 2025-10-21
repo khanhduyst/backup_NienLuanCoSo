@@ -1,5 +1,28 @@
 <?php include "layouts/header.php";
-include '../app/config.php'; ?>
+include '../app/config.php';
+
+if (isset($_SESSION['modal_message'])) {
+    $icon = $_SESSION['modal_type'] ?? 'success';
+    $title = addslashes($_SESSION['modal_title'] ?? '');
+    $message = addslashes($_SESSION['modal_message'] ?? '');
+    $order_id_safe = isset($order_id) ? (int)$order_id : 0;
+
+    echo "
+    <script>
+        Swal.fire({
+            icon: '$icon',
+            title: '$title',
+            html: '$message',
+            timer: 2500,
+            showConfirmButton: false
+        }).then(() => {
+            window.location.href = 'products.php';
+        });
+    </script>";
+
+    unset($_SESSION['modal_message'], $_SESSION['modal_title'], $_SESSION['modal_type']);
+}
+?>
 
 <div class="p-4">
     <div class="card mb-4">
@@ -40,27 +63,28 @@ include '../app/config.php'; ?>
                 <tbody>
                     <!-- Sản phẩm 1 -->
                     <?php
-                    $result = $conn->query("SELECT products.id AS product_id, products.img_main, products.name AS product_name, brands.name AS brands_name, products.status FROM products INNER JOIN brands ON products.brand_id = brands.id");
+                    $result = $conn->query("SELECT products.id AS product_id, products.img_main, products.name AS product_name, brands.name AS brands_name, products.status FROM products INNER JOIN brands ON products.brand_id = brands.id WHERE products.is_delete = 0");
                     $stt = 1;
                     while ($row = $result->fetch_assoc()) {
+                        $id = $row['product_id'];
                         echo "
                         <tr>
                         <td><img src='../public/assets/img/product/{$row['img_main']}' alt='{$row['product_name']}' width='50' class='rounded'></td>
                         <td>{$row['product_name']}</td>
                         <td>{$row['brands_name']}</td>
                         <td>
-                        <span class='badge " . ($row['status'] ? "bg-success" : "bg-secondary") . "'>" . ($row['status'] ? "Hiển thị" : "Ẩn") . "</span>
+                        <span class='badge " . ($row['status'] ? "bg-secondary" : "bg-success") . "'>" . ($row['status'] ? "Ẩn" : "Hiển thị") . "</span>
                         </td>
                         <td class='text-center'>
                             <a href='add_product.php?edit={$row['product_id']}' class='btn btn-sm btn-warning' title='Sửa sản phẩm'><i class='fas fa-edit'></i></a>
                             <a href='variants_product.php?product_id={$row['product_id']}' class='btn btn-sm btn-success' title='Thêm/Sửa biến thể'><i class='fa-solid fa-sliders'></i></a>
-                            <a href='#' class='btn btn-sm btn-danger'><i class='fas fa-trash-alt'></i></a>
+                           <a href='#' class='btn btn-sm btn-danger' onclick='confirmDelete($id)'><i class='fas fa-trash-alt'></i></a>
                         </td>
                     </tr>
                         ";
                     }
                     ?>
-                   
+
                 </tbody>
             </table>
 
@@ -115,6 +139,24 @@ include '../app/config.php'; ?>
             sorted.forEach(row => tbody.appendChild(row));
         });
     });
+
+
+    function confirmDelete(id) {
+        Swal.fire({
+            title: 'Bạn có chắc muốn xóa?',
+            text: "Hành động này không thể hoàn tác!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Xóa ngay',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = './controller/products_controller.php?delete=' + id;
+            }
+        });
+    }
 </script>
 
 

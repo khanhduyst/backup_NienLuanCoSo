@@ -66,7 +66,8 @@ if (isset($_SESSION['modal_message'])) {
     .content-box {
         max-height: 250px;
         /* chiều cao mặc định khi thu gọn */
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
         position: relative;
         transition: max-height 0.4s ease;
     }
@@ -180,7 +181,7 @@ $sql = "";
                                 $idProduct = $_GET['product_id'];
                                 $queryProduct = "SELECT DISTINCT p.id AS product_id, p.name AS product_name, c.name AS colorName
                                 FROM products p  INNER JOIN product_variants pv ON pv.product_id = p.id
-                                INNER JOIN colors c ON c.id = pv.color_id WHERE product_id = $idProduct";
+                                INNER JOIN colors c ON c.id = pv.color_id WHERE product_id = $idProduct and pv.is_deleted=0 and pv.status = 0";
                                 $product = $conn->query($queryProduct);
                                 ?>
                                 <label class="fw-bold">Màu sắc: <span id="selectedColor">Chưa chọn</span></label>
@@ -200,7 +201,7 @@ $sql = "";
                                 $idProduct = $_GET['product_id'];
                                 $queryRam = "SELECT DISTINCT p.id AS product_id, p.name AS product_name, r.size AS ramName
                                     FROM products p  INNER JOIN product_variants pv ON pv.product_id = p.id
-                                    INNER JOIN rams r ON r.id = pv.ram_id WHERE product_id = $idProduct AND pv.is_deleted = 0";
+                                    INNER JOIN rams r ON r.id = pv.ram_id WHERE product_id = $idProduct AND pv.is_deleted = 0 and pv.status = 0";
                                 $productRam = $conn->query($queryRam);
                                 ?>
                                 <label class="fw-bold">Kích thước(ram): <span id="selectedSize">Chưa chọn</span></label>
@@ -220,7 +221,7 @@ $sql = "";
                                 $idProduct = $_GET['product_id'];
                                 $queryRom = "SELECT DISTINCT p.id AS product_id, p.name AS product_name, s.size AS romName
                                 FROM products p  INNER JOIN product_variants pv ON pv.product_id = p.id
-                                INNER JOIN storages s ON s.id = pv.storage_id WHERE product_id = $idProduct AND pv.is_deleted = 0";
+                                INNER JOIN storages s ON s.id = pv.storage_id WHERE product_id = $idProduct AND pv.is_deleted = 0 AND pv.status = 0";
                                 $productRom = $conn->query($queryRom);
                                 ?>
                                 <label class="fw-bold">Kích thước(ram): <span id="selectedRom">Chưa chọn</span></label>

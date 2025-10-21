@@ -43,8 +43,8 @@ if (isset($_GET['edit'])) {
           <div class="col-md-4">
             <label class="form-label">Tình trạng</label>
             <select class="form-select" name="status">
-              <option value="1" <?php echo isset($editColor) && $editColor['status'] == 1 ? 'selected' : '' ?>>Hiển thị</option>
-              <option value="0" <?php echo isset($editColor) && $editColor['status'] == 0 ? 'selected' : '' ?>>Ẩn</option>
+              <option value="0" <?php echo isset($editColor) && $editColor['status'] == 0 ? 'selected' : '' ?>>Hiển thị</option>
+              <option value="1" <?php echo isset($editColor) && $editColor['status'] == 1 ? 'selected' : '' ?>>Ẩn</option>
             </select>
           </div>
         </div>
@@ -79,7 +79,7 @@ if (isset($_GET['edit'])) {
         <tbody>
           <!-- Dữ liệu mẫu -->
           <?php
-          $result = $conn->query("SELECT * FROM colors ORDER BY id ASC");
+          $result = $conn->query("SELECT * FROM colors WHERE is_delete =0 ORDER BY id ASC");
           $stt = 1;
           while ($row = $result->fetch_assoc()) {
             echo "
@@ -92,8 +92,8 @@ if (isset($_GET['edit'])) {
                 {$row['code']}
               </div>
             </td>
-            <td><span class='badge " . ($row['status'] ? "bg-success" : "bg-secondary") . " '>"
-              . ($row['status'] ? "Hiển thị" : "Ẩn") . "</span></td>
+            <td><span class='badge " . ($row['status'] ? "bg-secondary" : "bg-success") . " '>"
+              . ($row['status'] ? "Ẩn" : "Hiển thị") . "</span></td>
             <td>
               <a href='colors.php?edit={$row['id']}' class='btn btn-sm btn-warning'>Sửa</a>
               <a href='controller/colors_controller.php?delete={$row['id']}'

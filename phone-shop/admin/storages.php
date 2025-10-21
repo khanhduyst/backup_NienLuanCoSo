@@ -29,19 +29,19 @@ if (isset($_GET['edit'])) {
     </div>
     <div class="card-body">
       <form action="./controller/storages_controller.php" method="post">
-         <?php if ($editStorages): ?>
+        <?php if ($editStorages): ?>
           <input type="hidden" name="id" value="<?= $editStorages['id'] ?>">
         <?php endif; ?>
         <div class="row g-3">
           <div class="col-md-6">
             <label class="form-label">Dung lượng bộ nhớ</label>
-             <input type="text" class="form-control" name="size" value="<?php echo $editStorages['size'] ?? '' ?>" placeholder="Ví dụ: 64GB, 128GB, 1TB">
+            <input type="text" class="form-control" name="size" value="<?php echo $editStorages['size'] ?? '' ?>" placeholder="Ví dụ: 64GB, 128GB, 1TB">
           </div>
           <div class="col-md-6">
             <label class="form-label">Tình trạng</label>
             <select class="form-select" name="status">
-              <option value="1" <?php echo isset($editStorages) && $editStorages['status'] == 1 ? 'selected' : '' ?>>Hiển thị</option>
-              <option value="0" <?php echo isset($editStorages) && $editStorages['status'] == 0 ? 'selected' : '' ?>>Ẩn</option>
+              <option value="0" <?php echo isset($editStorages) && $editStorages['status'] == 0 ? 'selected' : '' ?>>Hiển thị</option>
+              <option value="1" <?php echo isset($editStorages) && $editStorages['status'] == 1 ? 'selected' : '' ?>>Ẩn</option>
             </select>
           </div>
         </div>
@@ -74,15 +74,15 @@ if (isset($_GET['edit'])) {
         </thead>
         <tbody>
           <?php
-          $result = $conn->query("SELECT * FROM storages ORDER BY id ASC");
+          $result = $conn->query("SELECT * FROM storages WHERE is_delete =0 ORDER BY id ASC");
           $stt = 1;
           while ($row = $result->fetch_assoc()) {
             echo "
               <tr>
             <td>$stt</td>
             <td>{$row['size']}</td>
-            <td><span class='badge " . ($row['status'] ? "bg-success" : "bg-secondary") . " '>"
-              . ($row['status'] ? "Hiển thị" : "Ẩn") . "</span></td>
+            <td><span class='badge " . ($row['status'] ? "bg-secondary" : "bg-success") . " '>"
+              . ($row['status'] ? "Ẩn" : "Hiển thị") . "</span></td>
             <td>
               <a href='storages.php?edit={$row['id']}' class='btn btn-sm btn-warning'>Sửa</a>
               <a href='controller/storages_controller.php?delete={$row['id']}'

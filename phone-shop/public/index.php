@@ -45,7 +45,7 @@ include '../app/config.php';
 
 <!-- Sản phẩm -->
 <?php
-$result = $conn->query("SELECT products.id AS idProduct, products.name AS name, products.img_main AS img, MAX(product_variants.price) AS maxPrice, MIN(product_variants.price) AS minPrice FROM products INNER JOIN product_variants ON product_variants.product_id = products.id WHERE brand_id = 17 or name LIKE '%iPhone%' GROUP BY 
+$result = $conn->query("SELECT products.id AS idProduct, products.name AS name, products.img_main AS img, products.status AS status, MAX(product_variants.price) AS maxPrice, MIN(product_variants.price) AS minPrice FROM products INNER JOIN product_variants ON product_variants.product_id = products.id WHERE (brand_id = 17 or name LIKE '%iPhone%') AND products.status = 0 AND products.is_delete =0 GROUP BY 
         products.id, products.name, products.img_main LIMIT 5");
 if ($result && $result->num_rows > 0) {
 ?>
@@ -88,7 +88,7 @@ if ($result && $result->num_rows > 0) {
     }
     echo "</div>
             <div class='d-flex justify-content-center my-4'>
-                <a href='#' class='btn btn-primary'>Xem tất cả >></a>
+                <a href='./products.php?brand=iphone' class='btn btn-primary'>Xem tất cả >></a>
             </div>
         
 </div>
@@ -98,7 +98,7 @@ if ($result && $result->num_rows > 0) {
     ?>
 
     <?php
-    $result = $conn->query("SELECT products.id AS idProduct, products.name AS name, products.img_main AS img, MAX(product_variants.price) AS maxPrice, MIN(product_variants.price) AS minPrice FROM products INNER JOIN product_variants ON product_variants.product_id = products.id WHERE brand_id = 15 or name LIKE '%samsung%' GROUP BY 
+    $result = $conn->query("SELECT products.id AS idProduct, products.name AS name, products.img_main AS img, products.status AS status, MAX(product_variants.price) AS maxPrice, MIN(product_variants.price) AS minPrice FROM products INNER JOIN product_variants ON product_variants.product_id = products.id WHERE (brand_id = 15 or name LIKE '%samsung%') AND products.status =0  AND products.is_delete =0 GROUP BY 
         products.id, products.name, products.img_main LIMIT 5");
     if ($result && $result->num_rows > 0) {
     ?>
@@ -142,7 +142,7 @@ if ($result && $result->num_rows > 0) {
                 ?>
             </div>
             <div class="d-flex justify-content-center my-4">
-                <a href="#" class="btn btn-primary">Xem tất cả >></a>
+                <a href="./products.php?brand=samsung" class="btn btn-primary">Xem tất cả >></a>
             </div>
 
         </div>

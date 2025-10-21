@@ -38,9 +38,9 @@ if (isset($_GET['edit'])) {
           </div>
           <div class="col-md-6">
             <label class="form-label">Tình trạng</label>
-             <select class="form-select" name="status">
-              <option value="1" <?php echo isset($editRams) && $editRams['status'] == 1 ? 'selected' : '' ?>>Hiển thị</option>
-              <option value="0" <?php echo isset($editRams) && $editRams['status'] == 0 ? 'selected' : '' ?>>Ẩn</option>
+            <select class="form-select" name="status">
+              <option value="0" <?php echo isset($editRams) && $editRams['status'] == 0 ? 'selected' : '' ?>>Hiển thị</option>
+              <option value="1" <?php echo isset($editRams) && $editRams['status'] == 1 ? 'selected' : '' ?>>Ẩn</option>
             </select>
           </div>
         </div>
@@ -73,15 +73,15 @@ if (isset($_GET['edit'])) {
         </thead>
         <tbody>
           <?php
-          $result = $conn->query("SELECT * FROM rams ORDER BY id ASC");
+          $result = $conn->query("SELECT * FROM rams WHERE is_delete =0 ORDER BY id ASC");
           $stt = 1;
           while ($row = $result->fetch_assoc()) {
             echo "
               <tr>
             <td>$stt</td>
             <td>{$row['size']}</td>
-            <td><span class='badge " . ($row['status'] ? "bg-success" : "bg-secondary") . " '>"
-              . ($row['status'] ? "Hiển thị" : "Ẩn") . "</span></td>
+             <td><span class='badge " . ($row['status'] ? "bg-secondary" : "bg-success") . "'>"
+              . ($row['status'] ? "Ẩn" : "Hiển thị") . "</span></td>
             <td>
               <a href='rams.php?edit={$row['id']}' class='btn btn-sm btn-warning'>Sửa</a>
               <a href='controller/rams_controller.php?delete={$row['id']}'

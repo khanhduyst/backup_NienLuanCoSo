@@ -14,7 +14,7 @@ if (isset($_POST['login'])) {
     $password = $_POST['password'];
 
     // Tìm user theo username
-    $sql = "SELECT * FROM users WHERE username = '$username' AND status = 1 LIMIT 1";
+    $sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password' AND status = 0 AND is_delete = 0 LIMIT 1";
     $result = $conn->query($sql);
 
     if ($result && $result->num_rows == 1) {

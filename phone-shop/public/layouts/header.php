@@ -16,7 +16,23 @@ include '../app/config.php'; ?>
 
     <!-- File CSS riêng -->
     <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
+    <style>
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            margin-top: 0;
+        }
 
+        form .btn {
+            padding: 0.375rem 0.6rem;
+            height: 38px;
+            border: 1px solid #ddd;
+        }
+
+        form .form-control {
+            height: 38px;
+            border: 1px solid #ddd;
+        }
+    </style>
 </head>
 
 <body>
@@ -40,37 +56,64 @@ include '../app/config.php'; ?>
             <div class="d-flex align-items-center gap-3">
                 <div><i class="bi bi-telephone"></i> <span class="small">0385942049</span></div>
                 <div><i class="bi bi-geo-alt"></i> <span class="small">Cửa hàng</span></div>
-                <div><i class="bi bi-person"></i>
-                    <?php
-                    if (isset($_SESSION['username'])) {
-                        // Đã đăng nhập => hiển thị username
-                        echo '<a href="../public/order_history.php" class="small text-white text-decoration-none">'
-                            . htmlspecialchars($_SESSION['username']) .
-                            '</a>';
-                    } else {
-                        // Chưa đăng nhập => hiển thị nút login
-                        echo '<a href="../public/login.php" class="small text-white text-decoration-none">
-            Đăng nhập / Đăng ký
-          </a>';
-                    }
-                    ?>
+                <div class="dropdown d-inline-block">
+                    <a href="#"
+                        class="text-white text-decoration-none dropdown-toggle"
+                        id="userDropdown"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="bi bi-person"></i>
+                        <?php
+                        if (isset($_SESSION['username'])) {
+                            echo htmlspecialchars($_SESSION['fullname']);
+                        } else {
+                            echo 'Đăng ký | đăng nhập';
+                        }
+                        ?>
+                    </a>
 
-
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                        <?php if (isset($_SESSION['username'])): ?>
+                              <li><a class="dropdown-item" href="../public/info.php">
+                                    <i class="bi bi-bag"></i> Thông tin tài khoản
+                                </a></li>
+                            <li></li>
+                            <li><a class="dropdown-item" href="../public/order_history.php">
+                                    <i class="bi bi-bag"></i> Quản lý đơn hàng
+                                </a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="../public/logout.php">
+                                    <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                                </a></li>
+                        <?php else: ?>
+                            <li><a class="dropdown-item" href="../public/login.php">
+                                    <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+                                </a></li>
+                            <li><a class="dropdown-item" href="../public/signup.php">
+                                    <i class="bi bi-person-plus"></i> Đăng ký
+                                </a></li>
+                        <?php endif; ?>
+                    </ul>
                 </div>
-                <a href="cart.php" class="btn btn-outline-light position-relative">
-                    <i class="bi bi-cart"></i> Giỏ hàng
-                    <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><?php
-                                                                                                                                    $cartCount = 0;
-                                                                                                                                    if (isset($_SESSION['cart'])) {
-                                                                                                                                        foreach ($_SESSION['cart'] as $item) {
-                                                                                                                                            $cartCount += $item['quantity']; // tính tổng quantity
-                                                                                                                                        }
-                                                                                                                                    }
-                                                                                                                                    echo $cartCount;
-                                                                                                                                    ?></span>
-                </a>
+
             </div>
+            <a href="cart.php" class="btn btn-outline-light position-relative">
+                <i class="bi bi-cart"></i> Giỏ hàng
+                <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><?php
+                                                                                                                                $cartCount = 0;
+                                                                                                                                if (isset($_SESSION['cart'])) {
+                                                                                                                                    foreach ($_SESSION['cart'] as $item) {
+                                                                                                                                        $cartCount += $item['quantity']; // tính tổng quantity
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                                echo $cartCount;
+                                                                                                                                ?></span>
+            </a>
         </div>
+    </div>
     </div>
 
     <!-- Thanh menu ngang -->

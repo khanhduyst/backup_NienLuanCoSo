@@ -9,8 +9,8 @@ if (isset($_POST['save'])) {
     $name = $_POST['name'];
     $type = $_POST['type'];
     $status = $_POST['status'];
-    $checkName = $conn->query("SELECT * FROM brands WHERE name = '$name' LIMIT 1");
-    if ($checkName->num_rows > 0) {
+    $checkName = $conn->query("SELECT * FROM brands WHERE name = '$name' AND is_delete = 0 LIMIT 1");
+    if ($checkName && $checkName->num_rows > 0) {
         $_SESSION['message'] = "Thương hiệu '$name' đã tồn tại!";
         $_SESSION['msg_type'] = "warning";
     } else {
@@ -60,7 +60,7 @@ if (isset($_POST['update'])) {
 
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
-    if ($conn->query("DELETE FROM brands WHERE id=$id")) {
+    if ($conn->query("UPDATE brands SET is_delete = 1, status = 1 WHERE id = $id")) {
         $_SESSION['message'] = "Xoá thương hiệu thành công!";
         $_SESSION['msg_type'] = "success";
 

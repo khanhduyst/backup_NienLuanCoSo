@@ -70,18 +70,26 @@ if (isset($_GET['edit'])) {
                         <select name="color" class="form-select">
                             <?php
                             if (isset($_GET['product_id'])) {
-                                if (!$editVariants) {
-                                    echo " <option value=''>-- Chọn màu --</option>";
+                                echo "<option value=''>-- Chọn màu --</option>";
+                                if (isset($_GET['edit']) && $editVariants) {
+                                    $colors = $conn->query("SELECT * FROM colors WHERE status = 0");
+                                } else {
+                                    $colors = $conn->query("SELECT * FROM colors WHERE status = 0 AND is_delete = 0");
                                 }
-                                $colors = $conn->query("SELECT * FROM colors WHERE status = 1");
-                                while ($row = $colors->fetch_assoc()) {
-                                    $selected = ($editVariants && $editVariants['color_id'] == $row['id']) ? 'selected' : '';
-                                    echo "<option value='{$row['id']}' $selected>{$row['name']}</option>";
+                                if ($colors && $colors->num_rows > 0) {
+                                    while ($row = $colors->fetch_assoc()) {
+                                        $selected = ($editVariants && $editVariants['color_id'] == $row['id']) ? 'selected' : '';
+                                        $label = $row['is_delete'] ? "{$row['name']} (Đã xóa)" : $row['name'];
+                                        echo "<option value='{$row['id']}' $selected>$label</option>";
+                                    }
+                                } else {
+                                    echo "<option disabled>Không có màu khả dụng</option>";
                                 }
                             } else {
-                                echo " <option value=''>-- Chọn màu --</option>";
+                                echo "<option value=''>-- Chọn màu --</option>";
                             }
                             ?>
+
                         </select>
                     </div>
                     <div class="col-md-4">
@@ -89,18 +97,28 @@ if (isset($_GET['edit'])) {
                         <select name="ram" class="form-select">
                             <?php
                             if (isset($_GET['product_id'])) {
-                                if (!$editVariants) {
-                                    echo "<option value=''>-- Chọn RAM --</option>";
+                                echo "<option value=''>-- Chọn RAM --</option>";
+
+                                if (isset($_GET['edit']) && $editVariants) {
+                                    $ram = $conn->query("SELECT * FROM rams WHERE status = 0");
+                                } else {
+                                    $ram = $conn->query("SELECT * FROM rams WHERE status = 0 AND is_delete = 0");
                                 }
-                                $ram = $conn->query("SELECT * FROM rams WHERE status = 1");
-                                while ($row = $ram->fetch_assoc()) {
-                                    $selected = ($editVariants && $editVariants['ram_id'] == $row['id']) ? 'selected' : '';
-                                    echo " <option value='{$row['id']}' $selected>{$row['size']}</option>";
+                                if ($ram && $ram->num_rows > 0) {
+                                    while ($row = $ram->fetch_assoc()) {
+                                        $selected = ($editVariants && $editVariants['ram_id'] == $row['id']) ? 'selected' : '';
+                                        $label = $row['is_delete'] ? "{$row['size']} (Đã xóa)" : $row['size'];
+
+                                        echo "<option value='{$row['id']}' $selected>$label</option>";
+                                    }
+                                } else {
+                                    echo "<option disabled>Không có RAM khả dụng</option>";
                                 }
                             } else {
                                 echo "<option value=''>-- Chọn RAM --</option>";
                             }
                             ?>
+
                         </select>
                     </div>
                     <div class="col-md-4">
@@ -108,18 +126,25 @@ if (isset($_GET['edit'])) {
                         <select name="storage" class="form-select">
                             <?php
                             if (isset($_GET['product_id'])) {
-                                if (!$editVariants) {
-                                    echo "<option value=''>-- Chọn Storage --</option>";
+                                echo "<option value=''>-- Chọn Storage --</option>";
+                                if (isset($_GET['edit']) && $editVariants) {
+                                    $storage = $conn->query("SELECT * FROM storages WHERE status = 0");
+                                } else {
+                                    $storage = $conn->query("SELECT * FROM storages WHERE status = 0 AND is_delete = 0");
                                 }
-                                $storage = $conn->query("SELECT * FROM storages WHERE status = 1");
-                                while ($row = $storage->fetch_assoc()) {
-                                    $selected = ($editVariants && $editVariants['storage_id'] == $row['id']) ? 'selected' : '';
-                                    echo " <option value='{$row['id']}' $selected>{$row['size']}</option>";
+                                if ($storage && $storage->num_rows > 0) {
+                                    while ($row = $storage->fetch_assoc()) {
+                                        $selected = ($editVariants && $editVariants['storage_id'] == $row['id']) ? 'selected' : '';
+                                        echo "<option value='{$row['id']}' $selected>{$row['size']}</option>";
+                                    }
+                                } else {
+                                    echo "<option disabled>Không có dữ liệu</option>";
                                 }
                             } else {
                                 echo "<option value=''>-- Chọn Storage --</option>";
                             }
                             ?>
+
                         </select>
                     </div>
                 </div>
@@ -136,8 +161,8 @@ if (isset($_GET['edit'])) {
                     <div class="col-md-4">
                         <label class="form-label">Trạng thái</label>
                         <select class="form-select" name="status">
-                            <option value="1" <?php echo isset($editVariants) && $editVariants['status'] == 1 ? 'selected' : '' ?>>Hiển thị</option>
-                            <option value="0" <?php echo isset($editVariants) && $editVariants['status'] == 0 ? 'selected' : '' ?>>Ẩn</option>
+                            <option value="0" <?php echo isset($editVariants) && $editVariants['status'] == 0 ? 'selected' : '' ?>>Hiển thị</option>
+                            <option value="1" <?php echo isset($editVariants) && $editVariants['status'] == 1 ? 'selected' : '' ?>>Ẩn</option>
                         </select>
                     </div>
                 </div>
@@ -186,7 +211,8 @@ if (isset($_GET['edit'])) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (isset($_GET['product_id'])) {
+                    <?php
+                    if (isset($_GET['product_id'])) {
                         $idProduct = $_GET['product_id'];
                         $result = $conn->query("SELECT products.id AS product_id, product_variants.id AS variants_id, colors.name AS color_name, rams.size AS ram_name, storages.size AS rom_name, product_variants.price AS price, product_variants.quantity AS qty, product_variants.status AS status
                                 FROM products 
@@ -195,7 +221,7 @@ if (isset($_GET['edit'])) {
                                 INNER JOIN storages ON product_variants.storage_id = storages.id
                                 INNER JOIN colors ON product_variants.color_id = colors.id
                                 WHERE products.id = $idProduct AND product_variants.is_deleted = 0 OR product_variants.is_deleted IS NULL ORDER BY colors.name ASC");
-                                $product_id_del = (int)$_GET['product_id']??0;
+                        $product_id_del = (int)$_GET['product_id'] ?? 0;
                         $stt = 1;
                         while ($row = $result->fetch_assoc()) {
                             echo "
@@ -206,7 +232,7 @@ if (isset($_GET['edit'])) {
                                     <td>{$row['rom_name']}</td>
                                     <td>" . number_format($row['price'], 0, ',', '.') . " ₫</td>
                                     <td>{$row['qty']}</td>
-                                    <td><span class='badge " . ($row['status'] ? "bg-success" : "bg-secondary") . "'>" . ($row['status'] ? 'Hiển thị' : 'Ẩn') . "</span></td>
+                                    <td><span class='badge " . ($row['status'] ? "bg-secondary" : "bg-success") . "'>" . ($row['status'] ? 'Ẩn' : 'Hiển thị') . "</span></td>
                                     <td>
                                         <a href='variants_product.php?product_id={$row['product_id']}&edit={$row['variants_id']}' class='btn btn-sm btn-warning'>Sửa</a>
                                         <button type='button' class='btn btn-sm btn-danger'data-bs-toggle='modal' data-bs-target='#confirmDeleteModal' data-id='{$row['variants_id']}' data-product='$product_id_del'>Xoá</button>

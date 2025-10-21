@@ -45,8 +45,8 @@ if (isset($_GET['edit'])) {
           <div class="col-md-3">
             <label class="form-label">Tình trạng</label>
             <select class="form-select" name="status">
-              <option value="1" <?= isset($editBrand) && $editBrand['status'] == 1 ? 'selected' : '' ?>>Hiển thị</option>
-              <option value="0" <?= isset($editBrand) && $editBrand['status'] == 0 ? 'selected' : '' ?>>Ẩn</option>
+              <option value="0" <?= isset($editBrand) && $editBrand['status'] == 0 ? 'selected' : '' ?>>Hiển thị</option>
+              <option value="1" <?= isset($editBrand) && $editBrand['status'] == 1 ? 'selected' : '' ?>>Ẩn</option>
             </select>
           </div>
         </div>
@@ -93,7 +93,7 @@ if (isset($_GET['edit'])) {
           <?php
           $type = $_GET['type'] ?? '';
 
-          $sql = "SELECT * FROM brands";
+          $sql = "SELECT * FROM brands WHERE is_delete =0";
           if ($type !== '') {
             $sql .= " WHERE type = $type";
           }
@@ -110,8 +110,8 @@ if (isset($_GET['edit'])) {
                 <td>{$row['name']}</td>
                 <td><span class='badge " . ($row['type'] ? "bg-danger" : "bg-primary") . "'>"
               . ($row['type'] ? "Thương hiệu điện thoại" : "Thương hiệu chip") . "</span></td>
-                <td><span class='badge " . ($row['status'] ? "bg-success" : "bg-secondary") . "'>"
-              . ($row['status'] ? "Hiển thị" : "Ẩn") . "</span></td>
+                <td><span class='badge " . ($row['status'] ? "bg-secondary" : "bg-success") . "'>"
+              . ($row['status'] ? "Ẩn" : "Hiển thị") . "</span></td>
                 <td>
                   <a href='brands.php?edit={$row['id']}' class='btn btn-sm btn-warning'>Sửa</a>
                   <a href='controller/brands_controller.php?delete={$row['id']}'

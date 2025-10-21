@@ -6,9 +6,9 @@ $idUser_sesion = $_SESSION['user_id'];
 if (isset($_POST['save'])) {
     $size = $_POST['size'];
     $status = $_POST['status'];
-    $checkSize = $conn->query("SELECT * FROM rams WHERE size = '$size' LIMIT 1");
+    $checkSize = $conn->query("SELECT * FROM rams WHERE size = '$size' AND is_delete = 0 LIMIT 1");
 
-    if ($checkSize->num_rows > 0) {
+    if ($checkSize && $checkSize->num_rows > 0) {
         $_SESSION['message'] = 'Tên Ram "$size" đã tồn tại';
         $_SESSION['msg_type'] = 'warning';
     } else {
@@ -32,7 +32,7 @@ if (isset($_POST['save'])) {
     header("Location: ../rams.php");
 }
 
-if(isset($_POST['update'])) {
+if (isset($_POST['update'])) {
     $id = $_POST['id'];
     $size = $_POST['size'];
     $status = $_POST['status'];
@@ -58,7 +58,7 @@ if(isset($_POST['update'])) {
 
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
-    if ($conn->query("DELETE FROM rams WHERE id=$id")) {
+    if ($conn->query("UPDATE rams SET is_delete = 1, status = 1 WHERE id = $id")) {
         $_SESSION['message'] = "Xoá Rams thành công!";
         $_SESSION['msg_type'] = "success";
 

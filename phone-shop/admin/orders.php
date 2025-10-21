@@ -1,4 +1,7 @@
-<?php include 'layouts/header.php'; ?>
+<?php
+include '../app/config.php';
+include 'layouts/header.php';
+?>
 
 <div class="container-fluid py-4">
 
@@ -47,26 +50,58 @@
         </thead>
         <tbody>
           <!-- dữ liệu mẫu -->
-          <tr>
-            <td>1001</td>
-            <td>Nguyễn Văn A</td>
-            <td>12,500,000₫</td>
-            <td><span class="badge bg-warning">Chờ xử lý</span></td>
-            <td>2025-09-22</td>
-            <td>
-              <a href="order_detail.php?id=1001" class="btn btn-sm btn-info">Xem</a>
-            </td>
-          </tr>
-          <tr>
-            <td>1002</td>
-            <td>Trần Thị B</td>
-            <td>25,000,000₫</td>
-            <td><span class="badge bg-success">Hoàn tất</span></td>
-            <td>2025-09-21</td>
-            <td>
-              <a href="order_detail.php?id=1002" class="btn btn-sm btn-info">Xem</a>
-            </td>
-          </tr>
+          <?php
+          $sqlOrder = "SELECT * FROM orders ORDER BY CASE 
+                          WHEN status = 'pending' THEN 1 
+                          WHEN status = 'processing' THEN 2
+                          WHEN status = 'completed' THEN 3 
+                          WHEN status = 'cancelled' THEN 4 
+                          ELSE 5
+                        END";
+          $resultOrder = $conn->query($sqlOrder);
+          while ($rows = $resultOrder->fetch_assoc()) {
+            $userID = $rows['user_id'];
+            $sqlUser = "SELECT * FROM users WHERE id = $userID LIMIT 1";
+            $user = $conn->query($sqlUser)->fetch_assoc();
+
+            $status = $rows['status'] ?? 'pending';
+            $statusText = '';
+            $badgeClass = '';
+            switch ($status) {
+              case 'pending':
+                $statusText = 'Chờ xử lý';
+                $badgeClass = 'bg-warning text-dark';
+                break;
+              case 'processing':
+                $statusText = 'Đang xử lý';
+                $badgeClass = 'bg-info text-dark';
+                break;
+              case 'completed':
+                $statusText = 'Hoàn tất';
+                $badgeClass = 'bg-success text-white';
+                break;
+              case 'cancelled':
+                $statusText = 'Đã huỷ';
+                $badgeClass = 'bg-danger text-white';
+                break;
+              default:
+                $statusText = 'Không xác định';
+                $badgeClass = 'bg-secondary text-white';
+            }
+          ?>
+            <tr>
+              <td>DH0<?php echo $rows['id'] ?></td>
+              <td><?php echo $user['fullname'] ?></td>
+              <td><?php echo number_format($rows['total'], 0, ',', '.') ?>₫</td>
+              <td><span class="badge <?php echo $badgeClass ?>"><?php echo $statusText ?></span></td>
+              <td><?php echo $rows['created_at'] ?></td>
+              <td>
+                <a href="order_detail.php?order_id=<?php echo $rows['id'] ?>" class="btn btn-sm btn-info">Xem</a>
+              </td>
+            </tr>
+          <?php
+          }
+          ?>
         </tbody>
       </table>
     </div>

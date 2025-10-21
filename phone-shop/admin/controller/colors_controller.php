@@ -7,12 +7,12 @@ if (isset($_POST['save'])) {
     $name = $_POST['name'];
     $code = $_POST['code'];
     $status = $_POST['status'];
-    $checkName = $conn->query("SELECT * FROM colors WHERE name = '$name' LIMIT 1");
-    $checkCode = $conn->query("SELECT * FROM colors WHERE code = '$code' LIMIT 1");
-    if ($checkName->num_rows > 0) {
+    $checkName = $conn->query("SELECT * FROM colors WHERE name = '$name' AND is_delete = 0 LIMIT 1");
+    $checkCode = $conn->query("SELECT * FROM colors WHERE code = '$code' AND is_delete = 0 LIMIT 1");
+    if ($checkName && $checkName->num_rows > 0) {
         $_SESSION['message'] = "Tên màu <b>'$name'</b> đã tồn tại";
         $_SESSION['msg_type'] = 'warning';
-    } else if ($checkCode->num_rows > 0) {
+    } else if ($checkName && $checkCode->num_rows > 0) {
         $_SESSION['message'] = "Mã màu <b>'$code'</b> đã tồn tại";
         $_SESSION['msg_type'] = 'warning';
     } else {
@@ -62,7 +62,7 @@ if (isset($_POST['update'])) {
 
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
-    if ($conn->query("DELETE FROM colors WHERE id=$id")) {
+    if ($conn->query("UPDATE colors SET is_delete = 1, status = 1 WHERE id = $id")) {
         $_SESSION['message'] = "Xoá màu thành công!";
         $_SESSION['msg_type'] = "success";
 
